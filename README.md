@@ -1,4 +1,10 @@
-# GWT-RPC Exporter
+# `gwtrpc2code`
+
+> Work in progress, please come back later!
+
+A simple tool that extracts information from GWT-RPC applications, such as the GWT version, globals, internal functions, and methods with their types and parameters and will generate code that can be used to call those methods.
+
+The goal is to provide a way to understand and interact with GWT-RPC applications without needing to reverse engineer the code manually.
 
 ## Roadmap
 
@@ -28,3 +34,7 @@ Since it's a work in progress, there's a small CLI that can run a debug version 
 ```bash
 bun run ./src/cli/debug.ts ./tests/local.js
 ```
+
+## References
+
+- [GWT-RPC Protocol](https://docs.google.com/document/d/1eG0YocsYYbNAtivkLtcaiEE5IOF5u4LUol8-LL0TIKU/edit?usp=sharing)
