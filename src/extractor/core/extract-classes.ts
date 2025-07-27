@@ -3,9 +3,13 @@ import { literal_or_global_string } from "../utils/literal-or-global-string";
 import { Program } from "../utils/types";
 import { is, traverse } from "estree-toolkit";
 
-export const extract_classes = (bundle: Program, globals: Record<string, string>) => {
+export const extract_classes = (
+  bundle: Program,
+  globals: Record<string, string>
+) => {
   let RemoteServiceProxy$ServiceHelper: GWTClass | undefined;
   const proxies: Array<GWTClass> = [];
+  const classes: Array<GWTClass> = [];
 
   // Look for `createForClass` call expressions.
   // >>> createForClass(packageName: string, compoundClassName: string, typeId: number): Class
@@ -14,10 +18,14 @@ export const extract_classes = (bundle: Program, globals: Record<string, string>
       if (!node || node.arguments.length !== 3) return;
 
       const arg0 = node.arguments[0];
-      const arg0_ok = (is.literal(arg0) && typeof arg0.value === "string") || is.identifier(arg0);
+      const arg0_ok =
+        (is.literal(arg0) && typeof arg0.value === "string") ||
+        is.identifier(arg0);
 
       const arg1 = node.arguments[1];
-      const arg1_ok = (is.literal(arg1) && typeof arg1.value === "string") || is.identifier(arg1);
+      const arg1_ok =
+        (is.literal(arg1) && typeof arg1.value === "string") ||
+        is.identifier(arg1);
 
       const arg2 = node.arguments[2];
       const arg2_ok = is.literal(arg2) && typeof arg2.value === "number";
@@ -40,16 +48,21 @@ export const extract_classes = (bundle: Program, globals: Record<string, string>
         default:
           if (compound_class_name.endsWith("_Proxy")) {
             proxies.push(instance);
+          } else {
+            classes.push(instance);
           }
       }
     },
   });
 
   if (!RemoteServiceProxy$ServiceHelper || proxies.length === 0)
-    throw new Error("no remote service proxy was found, are you sure this GWT app makes any RPC call?");
+    throw new Error(
+      "no remote service proxy was found, are you sure this GWT app makes any RPC call?"
+    );
 
   return {
     RemoteServiceProxy$ServiceHelper,
-    proxies
-  }
-}
+    proxies,
+    classes,
+  };
+};
